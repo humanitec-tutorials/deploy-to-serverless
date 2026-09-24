@@ -1,0 +1,21 @@
+apiVersion: score.dev/v1b1
+
+metadata:
+  name: my-workload
+
+containers:
+  main:
+    image: us-docker.pkg.dev/cloudrun/container/hello
+    variables:
+      DBUSER: ${resources.db.username}
+      DBPASS: ${resources.db.password}
+      DBHOST: ${resources.db.host}
+      DBCONN: postgres://${resources.db.username}:${resources.db.password}@${resources.db.host}:${resources.db.port}/${resources.db.name}
+      TEST_VALUE: ${resources.env.test_value}
+      TEST_SECRET: ${resources.env.test_secret}
+
+resources:
+  db:
+    type: postgres
+  env:
+    type: config
