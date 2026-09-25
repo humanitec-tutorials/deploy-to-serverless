@@ -1,3 +1,5 @@
+# This Resource Definition provides configuration values to other resources and to the workload
+# Besides static values, it also reads a secret value from Google Secret Manager
 resource "humanitec_resource_definition" "cloudrun_config" {
   driver_type = "humanitec/echo"
   id          = "${var.object_prefix}config"

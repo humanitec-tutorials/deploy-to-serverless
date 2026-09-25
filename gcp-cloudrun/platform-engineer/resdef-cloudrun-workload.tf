@@ -1,4 +1,5 @@
-# This workload Resource Definition provisions a containerized workload as a Google Cloud Run service
+# This workload Resource Definition defines a Generic Workload
+# It provisions a containerized workload as a Google Cloud Run service
 # It uses the Container Driver and a Driver image provided specifically for this purpose
 resource "humanitec_resource_definition" "cloudrun_workload" {
   driver_type = "humanitec/container-builtin"
