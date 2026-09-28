@@ -13,15 +13,30 @@ resource "humanitec_resource_definition" "cloudrun_workload" {
         "namespace"        = var.k8s_container_runner_namespace
         "service_account"  = var.k8s_container_runner_service_account
         "shared_directory" = "/home/my-user/workspace"
-        "variables" = {
-          # Reference and thus create a GCP service account resource for the Cloud Run runtime
-          "CLOUDRUN_RUNTIME_SERVICE_ACCOUNT" = "$${resources.gcp-service-account.outputs.email}"
-          "CLOUDSDK_CORE_PROJECT"            = "$${resources[\"config.default#shared.env\"].outputs.gcp_project_id}"
-          "CLOUDSDK_RUN_REGION"              = "$${resources[\"config.default#shared.env\"].outputs.gcp_region}"
-          "CLOUDRUN_SERVICE_NAME_PREFIX"     = "${var.object_prefix}$${context.app.id}-$${context.env.id}"
-        }
+        "variables" = merge(
+          {
+            # Reference and thus create a GCP service account resource for the Cloud Run runtime
+            "CLOUDRUN_RUNTIME_SERVICE_ACCOUNT" = "$${resources.gcp-service-account.outputs.email}"
+            "CLOUDSDK_CORE_PROJECT"            = "$${resources[\"config.default#shared.env\"].outputs.gcp_project_id}"
+            "CLOUDSDK_RUN_REGION"              = "$${resources[\"config.default#shared.env\"].outputs.gcp_region}"
+            "CLOUDRUN_SERVICE_NAME_PREFIX"     = "${var.object_prefix}$${context.app.id}-$${context.env.id}"
+          },
+          # Provide GCP deployer key only if configured
+          var.gcp_use_service_account_key ? {
+            "GOOGLE_APPLICATION_CREDENTIALS" = "credentials.json"
+          } : {}
+        )
       }
     })
+    secrets_string = jsonencode(merge(
+      # Provide GCP deployer key only if configured
+      var.gcp_use_service_account_key ? {
+        "files" = {
+          "credentials.json" = "$${resources[\"config.default#shared.env\"].outputs.gcp_deployer_key}"
+        }
+      } : {}
+      )
+    )
   }
 }
 

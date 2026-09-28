@@ -8,8 +8,9 @@ gcp_project_id="YOURVALUE"
 gcp_region="YOURVALUE"
 # Name of the Orchestrator secret store registration for Google Secret Manager
 gsm_secret_store_name="YOURVALUE"
-# Name of the GCP service account associated with the Container Runner, e.g. 'my-account'
-gcp_container_runner_service_account_name="YOURVALUE"
+# Name of the GCP service account to be used for deploying into GCP, e.g. 'my-account'
+# On GKE with Workload Identity, this is the service account associated with the Container Runner
+gcp_deployer_service_account_name="YOURVALUE"
 # Kubernetes namespace of the container runner
 k8s_container_runner_namespace="humanitec-runner"
 # Kubernetes service account for the container runner Jobs
@@ -18,3 +19,8 @@ k8s_container_runner_service_account="humanitec-runner"
 k8s-runner-cluster-resource-definition-id="YOURVALUE"
 # ID of the Resource Definition of type `agent` that defines the Humanitec Agent to use. Leave empty if not using an Agent"
 agent-resource-definition-id="YOURVALUE"
+# Whether to use a service account key to access Google Cloud from the runner
+# Set to false (default) to use GKE Workload Identity
+# Setting to true creates a service account key and stores it in the local state
+# Protect the state file and destroy the setup when done
+gcp_use_service_account_key=false

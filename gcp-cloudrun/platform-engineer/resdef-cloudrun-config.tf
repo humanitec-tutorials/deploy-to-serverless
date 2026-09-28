@@ -7,17 +7,26 @@ resource "humanitec_resource_definition" "cloudrun_config" {
   type        = "config"
   driver_inputs = {
     values_string = jsonencode({
-      "gcp_deployer_service_account" = "${var.gcp_container_runner_service_account_name}@${var.gcp_project_id}.iam.gserviceaccount.com"
+      "gcp_deployer_service_account" = "${var.gcp_deployer_service_account_name}@${var.gcp_project_id}.iam.gserviceaccount.com"
       "gcp_project_id"               = var.gcp_project_id
       "gcp_region"                   = var.gcp_region
       "test_value"                   = "THISISATESTVALUE"
     })
-    secret_refs = jsonencode({
-      "test_secret" = {
-        "ref"   = google_secret_manager_secret.cloudrun_test.secret_id
-        "store" = var.gsm_secret_store_name
-      }
-    })
+    secret_refs = jsonencode(merge(
+      {
+        "test_secret" = {
+          "ref"   = google_secret_manager_secret.cloudrun_test.secret_id
+          "store" = var.gsm_secret_store_name
+        }
+      },
+      # Provide GCP deployer key only if configured
+      var.gcp_use_service_account_key ? {
+        "gcp_deployer_key" = {
+          "ref"   = google_secret_manager_secret.gcp_deployer_key[0].secret_id
+          "store" = var.gsm_secret_store_name
+        }
+      } : {}
+    ))
   }
 }
 

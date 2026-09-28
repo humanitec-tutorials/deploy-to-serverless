@@ -19,8 +19,8 @@ variable "gsm_secret_store_name" {
   description = "Name of the Orchestrator secret store registration for Google Secret Manager"
   type        = string
 }
-variable "gcp_container_runner_service_account_name" {
-  description = "Name of the GCP service account associated with the Container Runner, e.g. 'my-account'"
+variable "gcp_deployer_service_account_name" {
+  description = "Name of the GCP service account to be used for deploying into GCP, e.g. 'my-account'. On GKE with Workload Identity, this is the service account associated with the Container Runner"
   type        = string
 }
 variable "k8s_container_runner_namespace" {
@@ -41,4 +41,9 @@ variable "agent-resource-definition-id" {
   description = "ID of the Resource Definition of type `agent` that defines the Humanitec Agent to use. Leave empty if not using an Agent"
   type        = string
   nullable    = true
+}
+variable "gcp_use_service_account_key" {
+  description = "Whether to use a service account key to access Google Cloud from the runner. Set to false (default) to use GKE Workload Identity. Setting to true creates a service account key and stores it in the local state. Protect the state file and destroy the setup when done"
+  type        = bool
+  default     = false
 }

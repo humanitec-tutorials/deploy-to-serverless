@@ -86,12 +86,27 @@ resource "humanitec_resource_definition" "cloudrun_runtime_service_account" {
         }
       }
       "use_default_backend" = true
-      "variables" = {
-        "deployer_service_account_email" = "$${resources[\"config.default#shared.env\"].outputs.gcp_deployer_service_account}"
-        "guresid"                        = "$${context.res.guresid}"
-        "project_id"                     = "$${resources[\"config.default#shared.env\"].outputs.gcp_project_id}"
-      }
+      "variables" = merge(
+        {
+          "deployer_service_account_email" = "$${resources[\"config.default#shared.env\"].outputs.gcp_deployer_service_account}"
+          "guresid"                        = "$${context.res.guresid}"
+          "project_id"                     = "$${resources[\"config.default#shared.env\"].outputs.gcp_project_id}"
+        },
+        # Provide GCP deployer key only if configured
+        var.gcp_use_service_account_key ? {
+          "GOOGLE_APPLICATION_CREDENTIALS" = "credentials.json"
+        } : {}
+      )
     })
+    secrets_string = jsonencode(merge(
+      # Provide GCP deployer key only if configured
+      var.gcp_use_service_account_key ? {
+        "files" = {
+          "credentials.json" = "$${resources[\"config.default#shared.env\"].outputs.gcp_deployer_key}"
+        }
+      } : {}
+      )
+    )
   }
 }
 
