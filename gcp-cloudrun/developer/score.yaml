@@ -13,9 +13,14 @@ containers:
       DBCONN: postgres://${resources.db.username}:${resources.db.password}@${resources.db.host}:${resources.db.port}/${resources.db.name}
       TEST_VALUE: ${resources.env.test_value}
       TEST_SECRET: ${resources.env.test_secret}
+    volumes:
+      - target: /app/backend/data
+        source: ${resources.data}
 
 resources:
   db:
     type: postgres
   env:
     type: config
+  data:
+    type: volume
