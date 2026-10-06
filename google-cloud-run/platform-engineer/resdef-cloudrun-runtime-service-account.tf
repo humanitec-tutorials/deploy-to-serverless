@@ -1,6 +1,6 @@
 # This Resource Definition provisions a GCP service account to serve as
 # the runtime service account for the Cloud Run execution
-resource "humanitec_resource_definition" "cloudrun_runtime_service_account" {
+resource "humanitec_resource_definition" "google_cloud_run_runtime_service_account" {
   driver_type = "humanitec/opentofu-container-runner-builtin"
   id          = "${var.object_prefix}runtime-service-account"
   name        = "${var.object_prefix}runtime-service-account"
@@ -110,10 +110,10 @@ resource "humanitec_resource_definition" "cloudrun_runtime_service_account" {
   }
 }
 
-resource "humanitec_resource_definition_criteria" "cloudrun_runtime_service_account_criteria_0" {
-  resource_definition_id = resource.humanitec_resource_definition.cloudrun_runtime_service_account.id
-  app_id                 = humanitec_application.cloudrun.id
-  env_id                 = humanitec_environment.cloudrun_development.id
-  class                  = "cloudrun"
+resource "humanitec_resource_definition_criteria" "google_cloud_run_runtime_service_account_criteria_0" {
+  resource_definition_id = resource.humanitec_resource_definition.google_cloud_run_runtime_service_account.id
+  app_id                 = humanitec_application.google_cloud_run.id
+  env_id                 = humanitec_environment.google_cloud_run_development.id
+  class                  = "google-cloud-run"
   force_delete           = true
 }

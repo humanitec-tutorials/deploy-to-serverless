@@ -1,7 +1,7 @@
 # This Resource Definition emulates a Postgres database by providing all required outputs
 # but not actually provisioning anything.
 # It does read credentials from a Google Secret Manager though
-resource "humanitec_resource_definition" "cloudrun_postgres" {
+resource "humanitec_resource_definition" "google_cloud_run_postgres" {
   driver_type = "humanitec/echo"
   id          = "${var.object_prefix}postgres"
   name        = "${var.object_prefix}postgres"
@@ -14,20 +14,20 @@ resource "humanitec_resource_definition" "cloudrun_postgres" {
     })
     secret_refs = jsonencode({
       "username" = {
-        "ref"   = google_secret_manager_secret.cloudrun_db_username.secret_id
+        "ref"   = google_secret_manager_secret.google_cloud_run_db_username.secret_id
         "store" = var.gsm_secret_store_name
       }
       "password" = {
-        "ref"   = google_secret_manager_secret.cloudrun_db_password.secret_id
+        "ref"   = google_secret_manager_secret.google_cloud_run_db_password.secret_id
         "store" = var.gsm_secret_store_name
       }
     })
   }
 }
 
-resource "humanitec_resource_definition_criteria" "cloudrun_postgres_criteria_0" {
-  resource_definition_id = resource.humanitec_resource_definition.cloudrun_postgres.id
-  app_id                 = humanitec_application.cloudrun.id
-  env_id                 = humanitec_environment.cloudrun_development.id
+resource "humanitec_resource_definition_criteria" "google_cloud_run_postgres_criteria_0" {
+  resource_definition_id = resource.humanitec_resource_definition.google_cloud_run_postgres.id
+  app_id                 = humanitec_application.google_cloud_run.id
+  env_id                 = humanitec_environment.google_cloud_run_development.id
   force_delete           = true
 }

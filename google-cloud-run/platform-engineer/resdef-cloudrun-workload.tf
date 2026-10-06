@@ -1,7 +1,7 @@
 # This workload Resource Definition defines a Generic Workload
 # It provisions a containerized workload as a Google Cloud Run service
 # It uses the Container Driver and a Driver image provided specifically for this purpose
-resource "humanitec_resource_definition" "cloudrun_workload" {
+resource "humanitec_resource_definition" "google_cloud_run_workload" {
   driver_type = "humanitec/container-builtin"
   id          = "${var.object_prefix}workload"
   name        = "${var.object_prefix}workload"
@@ -41,10 +41,10 @@ resource "humanitec_resource_definition" "cloudrun_workload" {
 }
 
 # The workload Resource Defition must match the class being used in the deployment commands
-resource "humanitec_resource_definition_criteria" "cloudrun_workload_criteria_0" {
-  resource_definition_id = resource.humanitec_resource_definition.cloudrun_workload.id
-  app_id                 = humanitec_application.cloudrun.id
-  env_id                 = humanitec_environment.cloudrun_development.id
-  class                  = "cloudrun"
+resource "humanitec_resource_definition_criteria" "google_cloud_run_workload_criteria_0" {
+  resource_definition_id = resource.humanitec_resource_definition.google_cloud_run_workload.id
+  app_id                 = humanitec_application.google_cloud_run.id
+  env_id                 = humanitec_environment.google_cloud_run_development.id
+  class                  = "google-cloud-run"
   force_delete           = true
 }
