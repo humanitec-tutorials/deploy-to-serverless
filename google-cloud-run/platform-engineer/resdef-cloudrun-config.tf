@@ -1,6 +1,6 @@
 # This Resource Definition provides configuration values to other resources and to the workload
 # Besides static values, it also reads a secret value from Google Secret Manager
-resource "humanitec_resource_definition" "cloudrun_config" {
+resource "humanitec_resource_definition" "google_cloud_run_config" {
   driver_type = "humanitec/echo"
   id          = "${var.object_prefix}config"
   name        = "${var.object_prefix}config"
@@ -15,7 +15,7 @@ resource "humanitec_resource_definition" "cloudrun_config" {
     secret_refs = jsonencode(merge(
       {
         "test_secret" = {
-          "ref"   = google_secret_manager_secret.cloudrun_test.secret_id
+          "ref"   = google_secret_manager_secret.google_cloud_run_test.secret_id
           "store" = var.gsm_secret_store_name
         }
       },
@@ -30,9 +30,9 @@ resource "humanitec_resource_definition" "cloudrun_config" {
   }
 }
 
-resource "humanitec_resource_definition_criteria" "cloudrun_config_criteria_0" {
-  resource_definition_id = resource.humanitec_resource_definition.cloudrun_config.id
-  app_id                 = humanitec_application.cloudrun.id
-  env_id                 = humanitec_environment.cloudrun_development.id
+resource "humanitec_resource_definition_criteria" "google_cloud_run_config_criteria_0" {
+  resource_definition_id = resource.humanitec_resource_definition.google_cloud_run_config.id
+  app_id                 = humanitec_application.google_cloud_run.id
+  env_id                 = humanitec_environment.google_cloud_run_development.id
   force_delete           = true
 }

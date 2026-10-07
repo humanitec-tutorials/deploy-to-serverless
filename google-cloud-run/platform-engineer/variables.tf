@@ -5,7 +5,7 @@ variable "humanitec_org_id" {
 variable "object_prefix" {
   description = "Universal prefix for all objects to create"
   type        = string
-  default     = "cloudrun-guide-"
+  default     = "google-cloud-run-guide-"
 }
 variable "gcp_project_id" {
   description = "Your Google Cloud project ID"

@@ -1,5 +1,5 @@
 # This Resource Definition provisions a simple emptyDir volume
-resource "humanitec_resource_definition" "cloudrun_volume_emptydir" {
+resource "humanitec_resource_definition" "google_cloud_run_volume_emptydir" {
   driver_type = "humanitec/template"
   id          = "${var.object_prefix}volume-emptydir"
   name        = "${var.object_prefix}volume-emptydir"
@@ -17,9 +17,9 @@ resource "humanitec_resource_definition" "cloudrun_volume_emptydir" {
   }
 }
 
-resource "humanitec_resource_definition_criteria" "cloudrun_volume_emptydir_criteria_0" {
-  resource_definition_id = resource.humanitec_resource_definition.cloudrun_volume_emptydir.id
-  app_id                 = humanitec_application.cloudrun.id
-  env_id                 = humanitec_environment.cloudrun_development.id
+resource "humanitec_resource_definition_criteria" "google_cloud_run_volume_emptydir_criteria_0" {
+  resource_definition_id = resource.humanitec_resource_definition.google_cloud_run_volume_emptydir.id
+  app_id                 = humanitec_application.google_cloud_run.id
+  env_id                 = humanitec_environment.google_cloud_run_development.id
   force_delete           = true
 }
