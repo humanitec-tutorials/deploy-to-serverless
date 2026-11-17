@@ -40,18 +40,13 @@ resource "google_secret_manager_secret_version" "google_cloud_run_db_password" {
 #####
 # Deploy to GCP without using GKE Workload identity, i.e. other GKE or non-GKE
 #####
-# Reference the configured existing deployer Google service account
-data "google_service_account" "gcp_deployer" {
-  account_id = var.gcp_deployer_service_account_name
-}
-
 resource "google_service_account_key" "gcp_deployer" {
   # Only create a key if requested
-  count              = var.gcp_use_service_account_key ? 1 : 0
-  service_account_id = data.google_service_account.gcp_deployer.name
+  count              = local.gcp_use_service_account_key ? 1 : 0
+  service_account_id = data.google_service_account.gcp_deployer[0].name
 }
 resource "google_secret_manager_secret" "gcp_deployer_key" {
-  count           = var.gcp_use_service_account_key ? 1 : 0
+  count           = local.gcp_use_service_account_key ? 1 : 0
   secret_id       = "${var.object_prefix}gcp-deployer-key"
   deletion_policy = "DELETE"
   replication {
@@ -59,7 +54,7 @@ resource "google_secret_manager_secret" "gcp_deployer_key" {
   }
 }
 resource "google_secret_manager_secret_version" "gcp_deployer_key" {
-  count  = var.gcp_use_service_account_key ? 1 : 0
+  count  = local.gcp_use_service_account_key ? 1 : 0
   secret = google_secret_manager_secret.gcp_deployer_key[0].id
   # private_key is the base64-encoded credentials.json file
   secret_data = base64decode(google_service_account_key.gcp_deployer[0].private_key)

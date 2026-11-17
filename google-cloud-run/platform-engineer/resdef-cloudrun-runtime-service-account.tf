@@ -26,9 +26,9 @@ resource "humanitec_resource_definition" "google_cloud_run_runtime_service_accou
             type        = string
             description = "GCP project that holds the service account."
           }
-          variable "deployer_service_account_email" {
+          variable "deployer_iam_member" {
             type        = string
-            description = "Account that deploys Cloud Run services and must act as this one."
+            description = "IAM member string of the identity that deploys Cloud Run services and must act as this account, e.g. 'serviceAccount:...' or 'principal://...'."
           }
           variable "guresid" {
             type        = string
@@ -51,7 +51,7 @@ resource "humanitec_resource_definition" "google_cloud_run_runtime_service_accou
           resource "google_service_account_iam_member" "deployer_acts_as_runtime" {
             service_account_id = google_service_account.runtime.name
             role               = "roles/iam.serviceAccountUser"
-            member             = "serviceAccount:$\{var.deployer_service_account_email}"
+            member             = var.deployer_iam_member
           }
           resource "google_project_iam_member" "runtime_reads_secrets" {
             project = var.project_id
@@ -88,19 +88,19 @@ resource "humanitec_resource_definition" "google_cloud_run_runtime_service_accou
       "use_default_backend" = true
       "variables" = merge(
         {
-          "deployer_service_account_email" = "$${resources[\"config.default#shared.env\"].outputs.gcp_deployer_service_account}"
-          "guresid"                        = "$${context.res.guresid}"
-          "project_id"                     = "$${resources[\"config.default#shared.env\"].outputs.gcp_project_id}"
+          "deployer_iam_member" = "$${resources[\"config.default#shared.env\"].outputs.gcp_deployer_iam_member}"
+          "guresid"             = "$${context.res.guresid}"
+          "project_id"          = "$${resources[\"config.default#shared.env\"].outputs.gcp_project_id}"
         },
         # Provide GCP deployer key only if configured
-        var.gcp_use_service_account_key ? {
+        local.gcp_use_service_account_key ? {
           "GOOGLE_APPLICATION_CREDENTIALS" = "credentials.json"
         } : {}
       )
     })
     secrets_string = jsonencode(merge(
       # Provide GCP deployer key only if configured
-      var.gcp_use_service_account_key ? {
+      local.gcp_use_service_account_key ? {
         "files" = {
           "credentials.json" = "$${resources[\"config.default#shared.env\"].outputs.gcp_deployer_key}"
         }

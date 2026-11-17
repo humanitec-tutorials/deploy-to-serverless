@@ -22,7 +22,7 @@ resource "humanitec_resource_definition" "google_cloud_run_workload" {
             "CLOUDRUN_SERVICE_NAME_PREFIX"     = "${var.object_prefix}$${context.app.id}-$${context.env.id}"
           },
           # Provide GCP deployer key only if configured
-          var.gcp_use_service_account_key ? {
+          local.gcp_use_service_account_key ? {
             "GOOGLE_APPLICATION_CREDENTIALS" = "credentials.json"
           } : {}
         )
@@ -30,7 +30,7 @@ resource "humanitec_resource_definition" "google_cloud_run_workload" {
     })
     secrets_string = jsonencode(merge(
       # Provide GCP deployer key only if configured
-      var.gcp_use_service_account_key ? {
+      local.gcp_use_service_account_key ? {
         "files" = {
           "credentials.json" = "$${resources[\"config.default#shared.env\"].outputs.gcp_deployer_key}"
         }

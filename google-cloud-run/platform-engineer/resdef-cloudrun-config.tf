@@ -7,10 +7,11 @@ resource "humanitec_resource_definition" "google_cloud_run_config" {
   type        = "config"
   driver_inputs = {
     values_string = jsonencode({
-      "gcp_deployer_service_account" = "${var.gcp_deployer_service_account_name}@${var.gcp_project_id}.iam.gserviceaccount.com"
-      "gcp_project_id"               = var.gcp_project_id
-      "gcp_region"                   = var.gcp_region
-      "test_value"                   = "THISISATESTVALUE"
+      # IAM member string of the deployer identity, e.g. "serviceAccount:..." or "principal://..."
+      "gcp_deployer_iam_member" = local.gcp_deployer_iam_member
+      "gcp_project_id"          = var.gcp_project_id
+      "gcp_region"              = var.gcp_region
+      "test_value"              = "THISISATESTVALUE"
     })
     secret_refs = jsonencode(merge(
       {
@@ -20,7 +21,7 @@ resource "humanitec_resource_definition" "google_cloud_run_config" {
         }
       },
       # Provide GCP deployer key only if configured
-      var.gcp_use_service_account_key ? {
+      local.gcp_use_service_account_key ? {
         "gcp_deployer_key" = {
           "ref"   = google_secret_manager_secret.gcp_deployer_key[0].secret_id
           "store" = var.gsm_secret_store_name

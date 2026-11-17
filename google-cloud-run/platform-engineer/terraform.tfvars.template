@@ -8,9 +8,25 @@ gcp_project_id="YOURVALUE"
 gcp_region="YOURVALUE"
 # Name of the Orchestrator secret store registration for Google Secret Manager
 gsm_secret_store_name="YOURVALUE"
-# Name of the GCP service account to be used for deploying into GCP, e.g. 'my-account'
-# On GKE with Workload Identity, this is the service account associated with the Container Runner
-gcp_deployer_service_account_name="YOURVALUE"
+
+# How the runner authenticates against Google Cloud. One of:
+# - "workload_identity_principal": GKE Workload Identity Federation, IAM roles granted directly
+#   to the principal of the runner's Kubernetes service account. No Google service account needed
+# - "workload_identity_service_account": GKE Workload Identity, the runner's Kubernetes service account
+#   impersonates the Google service account set in gcp_deployer_service_account_name
+# - "service_account_key": creates a key for the Google service account set in gcp_deployer_service_account_name
+#   and hands it to the runner. Use for non-GKE clusters or GKE without Workload Identity
+#   The key is stored in the local state. Protect the state file and destroy the setup when done
+gcp_auth_mode="YOURVALUE"
+
+# Name of the existing Google service account to be used for deploying into GCP, e.g. 'my-account'
+# Not used with gcp_auth_mode="workload_identity_principal"
+# gcp_deployer_service_account_name="YOURVALUE"
+
+# Project ID of the GKE cluster running the Container Runner, which owns the Workload Identity pool
+# Only used with gcp_auth_mode="workload_identity_principal". Defaults to gcp_project_id
+# gke_project_id="YOURVALUE"
+
 # Kubernetes namespace of the container runner
 k8s_container_runner_namespace="humanitec-runner"
 # Kubernetes service account for the container runner Jobs
@@ -19,8 +35,3 @@ k8s_container_runner_service_account="humanitec-runner"
 k8s-runner-cluster-resource-definition-id="YOURVALUE"
 # ID of the Resource Definition of type `agent` that defines the Humanitec Agent to use. Leave empty if not using an Agent"
 agent-resource-definition-id="YOURVALUE"
-# Whether to use a service account key to access Google Cloud from the runner
-# Set to false (default) to use GKE Workload Identity
-# Setting to true creates a service account key and stores it in the local state
-# Protect the state file and destroy the setup when done
-gcp_use_service_account_key=false
