@@ -19,7 +19,7 @@ resource "humanitec_resource_definition" "google_cloud_run_workload" {
             "CLOUDRUN_RUNTIME_SERVICE_ACCOUNT" = "$${resources.gcp-service-account.outputs.email}"
             "CLOUDSDK_CORE_PROJECT"            = "$${resources[\"config.default#shared.env\"].outputs.gcp_project_id}"
             "CLOUDSDK_RUN_REGION"              = "$${resources[\"config.default#shared.env\"].outputs.gcp_region}"
-            "CLOUDRUN_SERVICE_NAME_PREFIX"     = "${var.object_prefix}$${context.app.id}-$${context.env.id}"
+            "CLOUDRUN_SERVICE_NAME_PREFIX"     = "$${context.app.id}-$${context.env.id}"
           },
           # Provide GCP deployer key only if configured
           local.gcp_use_service_account_key ? {
