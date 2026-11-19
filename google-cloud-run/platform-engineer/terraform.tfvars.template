@@ -8,6 +8,9 @@ gcp_project_id="YOURVALUE"
 gcp_region="YOURVALUE"
 # Name of the Orchestrator secret store registration for Google Secret Manager
 gsm_secret_store_name="YOURVALUE"
+# Cloud run service ingress configuration. Supported values: 'all', 'internal', 'internal-and-cloud-load-balancing'
+# See https://docs.cloud.google.com/sdk/gcloud/reference/run/deploy#--ingress
+cloud_run_service_ingress="YOURVALUE"
 
 # How the runner authenticates against Google Cloud. One of:
 # - "workload_identity_principal": GKE Workload Identity Federation, IAM roles granted directly

@@ -21,6 +21,12 @@ resource "humanitec_resource_definition" "google_cloud_run_workload" {
             "CLOUDSDK_RUN_REGION"              = "$${resources[\"config.default#shared.env\"].outputs.gcp_region}"
             "CLOUDRUN_SERVICE_NAME_PREFIX"     = "$${context.app.id}-$${context.env.id}"
           },
+          {
+            # Configure ingress setting
+            "CLOUDRUN_SERVICE_ANNOTATIONS" = jsonencode({
+              "run.googleapis.com/ingress" = var.cloud_run_service_ingress
+            })
+          },
           # Provide GCP deployer key only if configured
           local.gcp_use_service_account_key ? {
             "GOOGLE_APPLICATION_CREDENTIALS" = "credentials.json"

@@ -19,6 +19,10 @@ variable "gsm_secret_store_name" {
   description = "Name of the Orchestrator secret store registration for Google Secret Manager"
   type        = string
 }
+variable "cloud_run_service_ingress" {
+  description = "Ingress setting for the Cloud Run service"
+  type        = string
+}
 variable "gcp_auth_mode" {
   description = <<-EOT
     How the runner authenticates against Google Cloud. One of:
